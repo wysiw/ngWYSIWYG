@@ -1,6 +1,6 @@
 {
   "name": "ngWYSIWYG",
-  "version": "0.6.2",
+  "version": "0.0.2e",
   "homepage": "https://github.com/psergus/ngWYSIWYG",
   "authors": [
     "Sergey Petrenko <sergey@inkfrog.com>"
@@ -8,7 +8,7 @@
   "description": "Angular WYSIWYG directive",
   "main": [
     "dist/editor.min.css",
-    "dist/wysiwyg.min.js",
+    "dist/wysiwyg_min.js",
     "dist/images/header-bg.gif",
     "dist/images/icons.png",
     "dist/images/resize.gif"

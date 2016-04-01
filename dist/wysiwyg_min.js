@@ -107,7 +107,7 @@
             h.addEventListener("click", o), h.innerHTML = "100%", f.appendChild(h), c.addEventListener("mousedown", i), c.addEventListener("mouseup", i), d.parent.document.addEventListener("mouseup", i), u.addEventListener("mscontrolselect", t), m.$on(e.ELEMENT_CLICKED, a), m.$on(e.CLICK_AWAY, s)
         }
     }]);
-    var t = '<div class="tinyeditor"><div class="tinyeditor-header" ng-hide="editMode">{toolbar}<div style="clear: both;"></div></div><div class="sizer" ngp-resizable><textarea data-placeholder-attr="" style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; resize: none; width: 100%; height: 100%;" ng-show="editMode" ng-model="content"></textarea><iframe style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; height: 100%;" ng-hide="editMode" ngp-content-frame="{sanitize: config.sanitize}" content-style="{contentStyle}" ng-model="content"></iframe></div><div class="tinyeditor-footer"><div ng-switch="editMode" ng-click="editMode = !editMode" class="toggle"><span ng-switch-when="true">wysiwyg</span><span ng-switch-default>source</span></div></div></div>';
+    var t = '<div class="tinyeditor"><div class="tinyeditor-header" ng-hide="editMode">{toolbar}<div style="clear: both;"></div></div><div class="sizer" ngp-resizable><textarea data-placeholder-attr="" style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; resize: none; width: 100%; height: 100%;" ng-show="editMode" aria-label="Comment" ng-model="content"></textarea><iframe style="-webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; width: 100%; height: 100%;" ng-hide="editMode" ngp-content-frame="{sanitize: config.sanitize}" content-style="{contentStyle}" ng-model="content"></iframe></div><div class="tinyeditor-footer"></div></div>';
     return e.module("ngWYSIWYG").directive("wysiwygEdit", ["ngpUtils", "NGP_EVENTS", "$rootScope", "$compile", "$timeout", "$q", function (n, o, i, r, a, l) {
         var s = function (a, s, c, d) {
             function u() {
@@ -485,84 +485,90 @@
         return {link: s, scope: {content: "=", api: "=", config: "="}, restrict: "AE", replace: !0}
     }]), e.module("ngWYSIWYG").directive("ngpContentFrame", ["ngpImageResizer", "ngpUtils", "NGP_EVENTS", "$compile", "$timeout", "$sanitize", function (t, n, o, i, r, a) {
         var l = function (i, l, s, c) {
+
             r(function() {
-            var d = l[0].contentDocument;
-            d.open(), d.write('<!DOCTYPE html><html><head></head><body contenteditable="true"></body></html>'), d.close(), d.designMode = "On", t.setup(i, d);
-            var u = e.element(l[0].contentDocument.body), p = e.element(l[0].contentDocument.head);
-            u.attr("contenteditable", "true"), d.addEventListener("click", function (e) {
-                "HTML" === e.target.tagName && e.target.querySelector("body").focus(), i.$emit(o.ELEMENT_CLICKED, e.target)
-            }), s.contentStyle && p.append('<link rel="stylesheet" type="text/css" href="' + s.contentStyle + '">'), c.$render = function () {
-                u[0].innerHTML = c.$viewValue ? i.config && i.config.sanitize ? a(c.$viewValue) : c.$viewValue : ""
-            }, i.sync = function () {
-                i.$evalAsync(function (e) {
-                    c.$setViewValue(u.html())
-                })
-            };
-            var g = null;
-            u.bind("click keyup change paste", function () {
-                g && r.cancel(g), g = r(function () {
-                    var e = u[0].ownerDocument, t = e.querySelector(".ngp-image-resizer"), o = u[0].innerHTML;
-                    t && (o = o.replace(t.outerHTML, "")), c.$setViewValue(o);
-                    var r = n.getSelectionBoundaryElement(l[0].contentWindow, !0);
-                    if (r) {
-                        var a = l[0].contentWindow.getComputedStyle(r), s = {
-                            bold: "bold" == a.getPropertyValue("font-weight") || parseInt(a.getPropertyValue("font-weight")) >= 700,
-                            italic: "italic" == a.getPropertyValue("font-style"),
-                            underline: "underline" == a.getPropertyValue("text-decoration"),
-                            strikethrough: "line-through" == a.getPropertyValue("text-decoration"),
-                            font: a.getPropertyValue("font-family"),
-                            size: parseInt(a.getPropertyValue("font-size")),
-                            color: a.getPropertyValue("color"),
-                            sub: "sub" == a.getPropertyValue("vertical-align"),
-                            "super": "super" == a.getPropertyValue("vertical-align"),
-                            background: a.getPropertyValue("background-color"),
-                            alignment: a.getPropertyValue("text-align")
-                        };
-                        i.$emit("cursor-position", s)
+                var d = l[0].contentDocument;
+                d.open(), d.write('<!DOCTYPE html><html><head></head><body contenteditable="true"></body></html>'), d.close(), d.designMode = "On", t.setup(i, d);
+                var u = e.element(l[0].contentDocument.body), p = e.element(l[0].contentDocument.head);
+                u.attr("contenteditable", "true"), d.addEventListener("click", function (e) {
+                    "HTML" === e.target.tagName && e.target.querySelector("body").focus(), i.$emit(o.ELEMENT_CLICKED, e.target)
+                }), s.contentStyle && p.append('<link rel="stylesheet" type="text/css" href="' + s.contentStyle + '">'), c.$render = function () {
+                    u[0].innerHTML = c.$viewValue ? i.config && i.config.sanitize ? a(c.$viewValue) : c.$viewValue : ""
+                }, i.sync = function () {
+                    i.$evalAsync(function (e) {
+                        c.$setViewValue(u.html())
+                    })
+                };
+                var g = null;
+                u.bind("click keyup change paste", function () {
+                    g && r.cancel(g), g = r(function () {
+                        var e = u[0].ownerDocument, t = e.querySelector(".ngp-image-resizer"), o = u[0].innerHTML;
+                        t && (o = o.replace(t.outerHTML, "")), c.$setViewValue(o);
+                        var r = n.getSelectionBoundaryElement(l[0].contentWindow, !0);
+                        if (r) {
+                            var a = l[0].contentWindow.getComputedStyle(r), s = {
+                                bold: "bold" == a.getPropertyValue("font-weight") || parseInt(a.getPropertyValue("font-weight")) >= 700,
+                                italic: "italic" == a.getPropertyValue("font-style"),
+                                underline: "underline" == a.getPropertyValue("text-decoration"),
+                                strikethrough: "line-through" == a.getPropertyValue("text-decoration"),
+                                font: a.getPropertyValue("font-family"),
+                                size: parseInt(a.getPropertyValue("font-size")),
+                                color: a.getPropertyValue("color"),
+                                sub: "sub" == a.getPropertyValue("vertical-align"),
+                                "super": "super" == a.getPropertyValue("vertical-align"),
+                                background: a.getPropertyValue("background-color"),
+                                alignment: a.getPropertyValue("text-align")
+                            };
+                            i.$emit("cursor-position", s)
+                        }
+                    }, 100, !0)
+                }), i.range = null, i.getSelection = function () {
+                    if (d.getSelection) {
+                        var e = d.getSelection();
+                        e.getRangeAt && e.rangeCount && (i.range = e.getRangeAt(0))
                     }
-                }, 100, !0)
-            }), i.range = null, i.getSelection = function () {
-                if (d.getSelection) {
-                    var e = d.getSelection();
-                    e.getRangeAt && e.rangeCount && (i.range = e.getRangeAt(0))
-                }
-            }, i.restoreSelection = function () {
-                if (i.range && d.getSelection) {
-                    var e = d.getSelection();
-                    e.removeAllRanges(), e.addRange(i.range)
-                }
-            }, i.$on("execCommand", function (e, t) {
-                console.log("execCommand: "), console.log(t), l[0].contentDocument.body.focus();
-                var n = d.selection;
-                if (n) {
-                    var o = n.createRange();
-                    d.execCommand(t.command, 0, t.arg), o.collapse(!1), o.select()
-                } else d.execCommand(t.command, 0, t.arg);
-                d.body.focus(), i.sync()
-            }), i.$on("insertElement", function (e, t) {
-                var n, o;
-                if (d.defaultView.getSelection) {
-                    if (n = d.defaultView.getSelection(), n.getRangeAt && n.rangeCount) {
-                        o = n.getRangeAt(0), o.deleteContents();
-                        var r = d.createElement("div");
-                        r.innerHTML = t;
-                        for (var a, l, s = d.createDocumentFragment(); a = r.firstChild;)l = s.appendChild(a);
-                        s.firstChild;
-                        o.insertNode(s), l && (o = o.cloneRange(), o.setStartAfter(l), o.collapse(!0), n.removeAllRanges(), n.addRange(o))
+                }, i.restoreSelection = function () {
+                    if (i.range && d.getSelection) {
+                        var e = d.getSelection();
+                        e.removeAllRanges(), e.addRange(i.range)
                     }
-                } else d.selection && "Control" != d.selection.type && d.selection.createRange().pasteHTML(t);
-                i.sync()
-            }), i.$on("$destroy", function () {
-            });
-            try {
-                d.execCommand("styleWithCSS", 0, 0), d.execCommand("enableObjectResizing", !1, "false"), d.execCommand("contentReadOnly", 0, "false")
-            } catch (m) {
+                }, i.$on("execCommand", function (e, t) {
+                    //console.log("execCommand: "), console.log(t),
+                    l[0].contentDocument.body.focus();
+                    var n = d.selection;
+                    if (n) {
+                        var o = n.createRange();
+                        d.execCommand(t.command, 0, t.arg), o.collapse(!1), o.select()
+                    } else d.execCommand(t.command, 0, t.arg);
+                    d.body.focus(), i.sync()
+                }), i.$on("insertElement", function (e, t) {
+                    var n, o;
+                    if (d.defaultView.getSelection) {
+                        if (n = d.defaultView.getSelection(), n.getRangeAt && n.rangeCount) {
+                            o = n.getRangeAt(0), o.deleteContents();
+                            var r = d.createElement("div");
+                            r.innerHTML = t;
+                            for (var a, l, s = d.createDocumentFragment(); a = r.firstChild;)l = s.appendChild(a);
+                            s.firstChild;
+                            o.insertNode(s), l && (o = o.cloneRange(), o.setStartAfter(l), o.collapse(!0), n.removeAllRanges(), n.addRange(o))
+                        }
+                    } else d.selection && "Control" != d.selection.type && d.selection.createRange().pasteHTML(t);
+                    i.sync()
+                }), i.$on("$destroy", function () {
+                });
                 try {
-                    d.execCommand("useCSS", 0, 1)
+                    d.execCommand("styleWithCSS", 0, 0), d.execCommand("enableObjectResizing", !1, "false"), d.execCommand("contentReadOnly", 0, "false")
                 } catch (m) {
+                    try {
+                        d.execCommand("useCSS", 0, 1)
+                    } catch (m) {
+                    }
                 }
-            }}, 100);
-        };
+
+
+
+            }, 1000);
+                    };
         return {link: l, require: "ngModel", scope: {config: "=ngpContentFrame"}, replace: !0, restrict: "AE"}
     }]), e.module("ngWYSIWYG").directive("ngpResizable", ["$document", function (e) {
         return function (t, n) {
